@@ -1,31 +1,6 @@
--- Database: plateiq-db
+DROP DATABASE IF EXISTS "plateiq-db";
 
---DROP DATABASE IF EXISTS "plateiq-db";
-
-
-
-	-- ============================================================
---  PlateIQ — Vehicle Identification System
---  PostgreSQL Database Setup Script
---  Course: BIOP2210 Object Oriented Programming II
--- ============================================================
---  Run order:
---    1. Create & connect to database
---    2. Tables
---    3. Views
---    4. Stored Procedures
---    5. Seed Data
--- ============================================================
-
-
--- ------------------------------------------------------------
--- SECTION 1: DATABASE
--- ------------------------------------------------------------
--- ------------------------------------------------------------
--- SECTION 2: TABLES
--- ------------------------------------------------------------
-
--- 2.1 Users (system access table)
+-- Users (system access table)
 CREATE TABLE Users (
     user_id     SERIAL          PRIMARY KEY,
     username    VARCHAR(50)     NOT NULL UNIQUE,
@@ -35,7 +10,7 @@ CREATE TABLE Users (
     created_at  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.2 Customer
+-- Customer
 CREATE TABLE Customer (
     customer_id SERIAL          PRIMARY KEY,
     name        VARCHAR(100)    NOT NULL,
@@ -44,7 +19,7 @@ CREATE TABLE Customer (
     email       VARCHAR(100)
 );
 
--- 2.3 Vehicle
+--Vehicle
 CREATE TABLE Vehicle (
     vehicle_id          SERIAL          PRIMARY KEY,
     registration_number VARCHAR(20)     NOT NULL UNIQUE,
@@ -55,7 +30,7 @@ CREATE TABLE Vehicle (
     owner_id            INT             REFERENCES Customer(customer_id) ON DELETE SET NULL
 );
 
--- 2.4 ServiceRecord
+--ServiceRecord
 CREATE TABLE ServiceRecord (
     service_id      SERIAL          PRIMARY KEY,
     vehicle_id      INT             NOT NULL REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
@@ -65,7 +40,7 @@ CREATE TABLE ServiceRecord (
     cost            DECIMAL(10,2)   NOT NULL DEFAULT 0.00
 );
 
--- 2.5 CustomerQuery
+--CustomerQuery
 CREATE TABLE CustomerQuery (
     query_id        SERIAL      PRIMARY KEY,
     customer_id     INT         NOT NULL REFERENCES Customer(customer_id) ON DELETE CASCADE,
@@ -75,7 +50,7 @@ CREATE TABLE CustomerQuery (
     response_text   TEXT
 );
 
--- 2.6 InsurancePolicy
+--InsurancePolicy
 CREATE TABLE InsurancePolicy (
     policy_id           SERIAL          PRIMARY KEY,
     vehicle_id          INT             NOT NULL REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
@@ -86,7 +61,7 @@ CREATE TABLE InsurancePolicy (
     coverage_details    TEXT
 );
 
--- 2.7 Claim
+-- Claim
 CREATE TABLE Claim (
     claim_id        SERIAL          PRIMARY KEY,
     policy_id       INT             NOT NULL REFERENCES InsurancePolicy(policy_id) ON DELETE CASCADE,
@@ -96,7 +71,7 @@ CREATE TABLE Claim (
                         CHECK (status IN ('PENDING','APPROVED','REJECTED'))
 );
 
--- 2.8 PoliceReport
+--PoliceReport
 CREATE TABLE PoliceReport (
     report_id       SERIAL          PRIMARY KEY,
     vehicle_id      INT             NOT NULL REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
@@ -106,7 +81,7 @@ CREATE TABLE PoliceReport (
     officer_name    VARCHAR(100)    NOT NULL
 );
 
--- 2.9 Violation
+--Violation
 CREATE TABLE Violation (
     violation_id    SERIAL          PRIMARY KEY,
     vehicle_id      INT             NOT NULL REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
@@ -116,12 +91,7 @@ CREATE TABLE Violation (
     status          VARCHAR(20)     NOT NULL DEFAULT 'UNPAID' CHECK (status IN ('PAID','UNPAID'))
 );
 
-
--- ------------------------------------------------------------
--- SECTION 3: VIEWS
--- ------------------------------------------------------------
-
--- 3.1 Full vehicle details: vehicle + owner + active insurance
+--Full vehicle details: vehicle + owner + active insurance
 CREATE OR REPLACE VIEW vehicle_full_details AS
 SELECT
     v.vehicle_id,
@@ -149,7 +119,7 @@ FROM Vehicle v
 LEFT JOIN Customer c        ON v.owner_id   = c.customer_id
 LEFT JOIN InsurancePolicy ip ON v.vehicle_id = ip.vehicle_id;
 
--- 3.2 All unpaid violations with vehicle and owner info
+-- All unpaid violations with vehicle and owner info
 CREATE OR REPLACE VIEW unpaid_violations AS
 SELECT
     vl.violation_id,
@@ -201,12 +171,7 @@ LEFT JOIN Customer c ON v.owner_id  = c.customer_id
 WHERE ip.end_date BETWEEN CURRENT_DATE AND (CURRENT_DATE + INTERVAL '60 days')
 ORDER BY ip.end_date ASC;
 
-
--- ------------------------------------------------------------
--- SECTION 4: STORED PROCEDURES
--- ------------------------------------------------------------
-
--- 4.1 Register a new vehicle and link to an existing customer
+--Register a new vehicle and link to an existing customer
 CREATE OR REPLACE PROCEDURE register_vehicle(
     p_registration_number   VARCHAR(20),
     p_make                  VARCHAR(50),
@@ -228,7 +193,7 @@ BEGIN
 END;
 $$;
 
--- 4.2 Add a service record for a vehicle
+--Add a service record for a vehicle
 CREATE OR REPLACE PROCEDURE add_service_record(
     p_vehicle_id    INT,
     p_service_date  DATE,
@@ -249,7 +214,7 @@ BEGIN
 END;
 $$;
 
--- 4.3 Add a police report for a vehicle
+--Add a police report for a vehicle
 CREATE OR REPLACE PROCEDURE add_police_report(
     p_vehicle_id    INT,
     p_report_date   DATE,
@@ -270,7 +235,7 @@ BEGIN
 END;
 $$;
 
--- 4.4 Process an insurance claim
+--Process an insurance claim
 CREATE OR REPLACE PROCEDURE process_claim(
     p_policy_id     INT,
     p_claim_date    DATE,
@@ -290,7 +255,7 @@ BEGIN
 END;
 $$;
 
--- 4.5 Update violation payment status
+--Update violation payment status
 CREATE OR REPLACE PROCEDURE pay_violation(
     p_violation_id INT
 )
@@ -304,20 +269,6 @@ BEGIN
     RAISE NOTICE 'Violation % marked as PAID.', p_violation_id;
 END;
 $$;
-
-
--- ============================================================
--- SECTION 5: SEED DATA
--- (Lesotho / Southern Africa realistic context)
--- ============================================================
-
-
--- ------------------------------------------------------------
--- 5.1 Users
--- Passwords shown as plain text here for dev reference.
--- In Java, hash with BCrypt before storing.
--- All dev passwords: Admin@123, User@1234, etc.
--- ------------------------------------------------------------
 
 INSERT INTO Users (username, password, role, status) VALUES
 ('admin.mokoena',    'hashed_Admin@123',     'ADMIN',     'ACTIVE'),
@@ -339,11 +290,7 @@ INSERT INTO Users (username, password, role, status) VALUES
 ('const.molefi',     'hashed_Pol@1234',      'POLICE',    'ACTIVE'),
 ('inactive.user',    'hashed_User@1234',     'CUSTOMER',  'INACTIVE');
 
-
--- ------------------------------------------------------------
--- 5.2 Customers
--- ------------------------------------------------------------
-
+--Customers
 INSERT INTO Customer (name, address, phone, email) VALUES
 ('Thabo Letsie',        'Ha Abia, Maseru 100',              '+26657812345',  'thabo.letsie@gmail.com'),
 ('Palesa Mosotho',      'Teyateyaneng, Berea 200',          '+26658923456',  'palesa.m@yahoo.com'),
@@ -356,13 +303,7 @@ INSERT INTO Customer (name, address, phone, email) VALUES
 ('Nthabiseng Peete',    'Maputsoe, Leribe 310',             '+26659690123',  'nthabiseng.p@gmail.com'),
 ('Lebohang Mofolo',     'Roma Campus Area, Maseru 180',     '+26657701234',  'lebohang.mofolo@lu.ac.ls');
 
-
--- ------------------------------------------------------------
--- 5.3 Vehicles
--- Lesotho plate format: e.g. A 123 GP (older) or LES-style.
--- Using a plausible local format: LS-XXXX-YY
--- ------------------------------------------------------------
-
+--Vehicles
 INSERT INTO Vehicle (registration_number, make, model, year, color, owner_id) VALUES
 ('LS-1042-AA',  'Toyota',       'Corolla',          2018,  'Silver',      1),
 ('LS-2387-BB',  'Toyota',       'Hilux',            2020,  'White',       2),
@@ -380,11 +321,7 @@ INSERT INTO Vehicle (registration_number, make, model, year, color, owner_id) VA
 ('LS-4501-NN',  'Volkswagen',   'Amarok',           2018,  'White',       4),
 ('LS-5612-OO',  'Kia',          'Sportage',         2023,  'Red',         5);
 
-
--- ------------------------------------------------------------
--- 5.4 Service Records
--- ------------------------------------------------------------
-
+--Service Records
 INSERT INTO ServiceRecord (vehicle_id, service_date, service_type, description, cost) VALUES
 (1,  '2024-01-15', 'Oil Change',           'Full synthetic oil change, filter replaced.',                          350.00),
 (1,  '2024-06-10', 'Brake Service',        'Front brake pads and rotors replaced.',                                1200.00),
@@ -409,11 +346,7 @@ INSERT INTO ServiceRecord (vehicle_id, service_date, service_type, description, 
 (3,  '2025-02-22', 'Oil Change',           'Routine oil and filter change.',                                       350.00),
 (6,  '2025-03-15', 'Brake Fluid',          'Brake fluid flushed and replaced.',                                    280.00);
 
-
--- ------------------------------------------------------------
--- 5.5 Customer Queries
--- ------------------------------------------------------------
-
+--Customer Queries
 INSERT INTO CustomerQuery (customer_id, vehicle_id, query_date, query_text, response_text) VALUES
 (1,  1,  '2024-06-12', 'When is my next scheduled service due?',
                         'Your next service is due at 70 000 km or January 2026, whichever comes first.'),
@@ -436,11 +369,7 @@ INSERT INTO CustomerQuery (customer_id, vehicle_id, query_date, query_text, resp
 (10, 10, '2024-07-30', 'Is the AC system under warranty after the regas?',
                         'Yes, the regas service carries a 6-month warranty from the date of service.');
 
-
--- ------------------------------------------------------------
--- 5.6 Insurance Policies
--- ------------------------------------------------------------
-
+--Insurance Policies
 INSERT INTO InsurancePolicy (vehicle_id, insurance_company, policy_number, start_date, end_date, coverage_details) VALUES
 (1,  'Lesotho National Insurance',  'LNI-2024-10042',  '2024-01-01', '2025-12-31', 'Comprehensive — third party, theft, fire, accidental damage. Excess: M 2 000.'),
 (2,  'Metropolitan Lesotho',        'MET-2023-20387',  '2023-06-01', '2025-05-31', 'Comprehensive — all risks including roadside assist and car hire.'),
@@ -458,11 +387,7 @@ INSERT INTO InsurancePolicy (vehicle_id, insurance_company, policy_number, start
 (14, 'Metropolitan Lesotho',        'MET-2023-45010',  '2023-03-01', '2024-02-28', 'Third party fire and theft — expired.'),
 (15, 'Lesotho National Insurance',  'LNI-2025-56120',  '2025-02-01', '2026-01-31', 'Comprehensive — SUV plan with tracker device fitted.');
 
-
--- ------------------------------------------------------------
--- 5.7 Claims
--- ------------------------------------------------------------
-
+--Claims
 INSERT INTO Claim (policy_id, claim_date, claim_amount, status) VALUES
 (1,  '2024-03-10', 8500.00,   'APPROVED'),
 (2,  '2024-07-22', 15000.00,  'PENDING'),
@@ -475,11 +400,7 @@ INSERT INTO Claim (policy_id, claim_date, claim_amount, status) VALUES
 (12, '2024-06-03', 3500.00,   'REJECTED'),
 (13, '2024-09-25', 11000.00,  'PENDING');
 
-
--- ------------------------------------------------------------
--- 5.8 Police Reports
--- ------------------------------------------------------------
-
+--Police Reports
 INSERT INTO PoliceReport (vehicle_id, report_date, report_type, description, officer_name) VALUES
 (4,  '2024-03-15', 'ACCIDENT',    'Rear-end collision on Main North Road, Maseru. Minor damage to bumper. Other vehicle fled the scene.',                           'Sgt. Mohlomi Ramakatane'),
 (7,  '2024-01-20', 'THEFT',       'Vehicle reported stolen from Ha Thetsane parking lot. Steering lock was broken. CCTV footage obtained.',                        'Const. Tlali Sehlabo'),
@@ -492,11 +413,7 @@ INSERT INTO PoliceReport (vehicle_id, report_date, report_type, description, off
 (10, '2024-04-09', 'INSPECTION',  'Vehicle flagged for expired licence disc during road-block. Driver warned and issued compliance notice.',                       'Const. Molefi Liphoto'),
 (13, '2024-09-12', 'OTHER',       'Vehicle used in suspected smuggling operation near Ficksburg border post. Referred to border control unit.',                   'Sgt. Mohlomi Ramakatane');
 
-
--- ------------------------------------------------------------
--- 5.9 Violations
--- ------------------------------------------------------------
-
+--Violations
 INSERT INTO Violation (vehicle_id, violation_date, violation_type, fine_amount, status) VALUES
 (1,  '2024-02-10', 'Speeding — 30 km/h over limit',     800.00,   'PAID'),
 (3,  '2024-04-15', 'Expired licence disc',               500.00,   'UNPAID'),
@@ -515,12 +432,7 @@ INSERT INTO Violation (vehicle_id, violation_date, violation_type, fine_amount, 
 (15, '2025-02-05', 'Using mobile phone while driving',   700.00,   'UNPAID');
 
 
--- ============================================================
--- VERIFICATION QUERIES
--- Run these after setup to confirm everything loaded correctly
--- ============================================================
-
--- Count rows per table
+--Count rows per table
 SELECT 'Users'          AS tbl, COUNT(*) FROM Users
 UNION ALL
 SELECT 'Customer',             COUNT(*) FROM Customer
@@ -539,12 +451,12 @@ SELECT 'PoliceReport',         COUNT(*) FROM PoliceReport
 UNION ALL
 SELECT 'Violation',            COUNT(*) FROM Violation;
 
--- Preview views
+--Preview views
 SELECT * FROM vehicle_full_details      LIMIT 5;
 SELECT * FROM unpaid_violations         LIMIT 5;
 SELECT * FROM vehicle_service_summary   LIMIT 5;
 SELECT * FROM expiring_policies;
 
--- Test a stored procedure call
+--Test a stored procedure call
 CALL register_vehicle('LS-9999-ZZ', 'Honda', 'Fit', 2022, 'Green', 1);
 CALL add_service_record(1, CURRENT_DATE, 'Oil Change', 'Test record from procedure.', 350.00);
