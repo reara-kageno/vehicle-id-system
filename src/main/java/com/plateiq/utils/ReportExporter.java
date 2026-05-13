@@ -1,32 +1,19 @@
 package com.plateiq.utils;
 
-import com.plateiq.model.Vehicle;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * Utility class for exporting data to text files.
- * Handles vehicle reports and other data exports.
- *
- * @author Plate IQ Team
- * @version 1.0
- */
+import com.plateiq.model.Vehicle;
+//Utility class for exporting data to text files.
 public class ReportExporter {
     
     private static final DateTimeFormatter DATE_FORMATTER = 
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
-    /**
-     * Exports a vehicle report to a text file.
-     * 
-     * @param vehicle the vehicle to export
-     * @param filename the filename for the report
-     * @return true if export was successful, false otherwise
-     */
+    //Exports a vehicle report to a text file.
     public static boolean exportVehicleReport(Vehicle vehicle, String filename) {
         StringBuilder content = new StringBuilder();
         content.append("========================================\n");
@@ -56,13 +43,7 @@ public class ReportExporter {
         return writeToFile(content.toString(), filename);
     }
     
-    /**
-     * Exports a list of vehicles to a text file.
-     * 
-     * @param vehicles the list of vehicles to export
-     * @param filename the filename for the report
-     * @return true if export was successful, false otherwise
-     */
+    //Exports a list of vehicles to a text file.
     public static boolean exportVehicleList(List<Vehicle> vehicles, String filename) {
         StringBuilder content = new StringBuilder();
         content.append("========================================\n");
@@ -95,13 +76,7 @@ public class ReportExporter {
         return writeToFile(content.toString(), filename);
     }
     
-    /**
-     * Exports a customer query log to a text file.
-     * 
-     * @param queryText the query text
-     * @param filename the filename for the log
-     * @return true if export was successful, false otherwise
-     */
+    //Exports a customer query log to a text file.
     public static boolean exportCustomerQuery(String queryText, String filename) {
         StringBuilder content = new StringBuilder();
         content.append("========================================\n");
@@ -119,13 +94,7 @@ public class ReportExporter {
         return writeToFile(content.toString(), filename);
     }
     
-    /**
-     * Writes content to a text file.
-     * 
-     * @param content the content to write
-     * @param filename the filename
-     * @return true if write was successful, false otherwise
-     */
+    //Writes content to a text file.
     private static boolean writeToFile(String content, String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write(content);
@@ -137,24 +106,12 @@ public class ReportExporter {
         }
     }
 
-    /**
-     * Exports custom text content to a file.
-     * 
-     * @param content the content to write
-     * @param filename the filename for the file
-     * @return true if export was successful, false otherwise
-     */
+    // Exports custom text content to a file.
     public static boolean exportToFile(String content, String filename) {
         return writeToFile(content, filename);
     }
     
-    /**
-     * Exports an error log to a text file.
-     * 
-     * @param errorMessage the error message
-     * @param filename the filename for the log
-     * @return true if export was successful, false otherwise
-     */
+    // Exports an error log to a text file.
     public static boolean exportErrorLog(String errorMessage, String filename) {
         StringBuilder content = new StringBuilder();
         content.append("========================================\n");
