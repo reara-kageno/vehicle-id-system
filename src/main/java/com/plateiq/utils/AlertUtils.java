@@ -7,21 +7,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.text.Font;
 
-/**
- * Utility class for displaying alert dialogs.
- * Provides static methods for showing error, info, warning, and confirmation dialogs.
- *
- * @author Plate IQ Team
- * @version 1.0
- */
+// Utility class for displaying alert dialogs.
 public class AlertUtils {
     
-    /**
-     * Shows an error dialog with the specified title and message.
-     * 
-     * @param title the dialog title
-     * @param message the error message
-     */
+    // Shows an error dialog with the specified title and message.
     public static void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -35,13 +24,7 @@ public class AlertUtils {
         showError("Error", message);
     }
     
-    /**
-     * Shows an error dialog with the specified title, header, and message.
-     * 
-     * @param title the dialog title
-     * @param header the dialog header text
-     * @param message the error message
-     */
+    // Shows an error dialog with the specified title, header, and message.
     public static void showError(String title, String header, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -51,12 +34,7 @@ public class AlertUtils {
         alert.showAndWait();
     }
     
-    /**
-     * Shows an info dialog with the specified title and message.
-     * 
-     * @param title the dialog title
-     * @param message the info message
-     */
+    // Shows an info dialog with the specified title and message.
     public static void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -70,13 +48,7 @@ public class AlertUtils {
         showInfo("Info", message);
     }
     
-    /**
-     * Shows an info dialog with the specified title, header, and message.
-     * 
-     * @param title the dialog title
-     * @param header the dialog header text
-     * @param message the info message
-     */
+    // Shows an info dialog with the specified title, header, and message.
     public static void showInfo(String title, String header, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -86,12 +58,7 @@ public class AlertUtils {
         alert.showAndWait();
     }
     
-    /**
-     * Shows a warning dialog with the specified title and message.
-     * 
-     * @param title the dialog title
-     * @param message the warning message
-     */
+    //Shows a warning dialog with the specified title and message.
     public static void showWarning(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -105,13 +72,7 @@ public class AlertUtils {
         showWarning("Warning", message);
     }
     
-    /**
-     * Shows a warning dialog with the specified title, header, and message.
-     * 
-     * @param title the dialog title
-     * @param header the dialog header text
-     * @param message the warning message
-     */
+    // Shows a warning dialog with the specified title, header, and message.
     public static void showWarning(String title, String header, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -121,13 +82,7 @@ public class AlertUtils {
         alert.showAndWait();
     }
     
-    /**
-     * Shows a confirmation dialog with the specified title and message.
-     * 
-     * @param title the dialog title
-     * @param message the confirmation message
-     * @return true if user clicked OK, false otherwise
-     */
+    // Shows a confirmation dialog with the specified title and message.
     public static boolean showConfirmation(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -142,14 +97,7 @@ public class AlertUtils {
         return alert.showAndWait().orElse(cancelButton) == okButton;
     }
     
-    /**
-     * Shows a confirmation dialog with the specified title, header, and message.
-     * 
-     * @param title the dialog title
-     * @param header the dialog header text
-     * @param message the confirmation message
-     * @return true if user clicked OK, false otherwise
-     */
+    // Shows a confirmation dialog with the specified title, header, and message.
     public static boolean showConfirmation(String title, String header, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -164,11 +112,7 @@ public class AlertUtils {
         return alert.showAndWait().orElse(cancelButton) == okButton;
     }
     
-    /**
-     * Applies a DropShadow effect to a DialogPane for visual enhancement.
-     * 
-     * @param dialogPane the DialogPane to apply the effect to
-     */
+    // Applies a DropShadow effect to a DialogPane for visual enhancement.
     public static void applyDropShadow(DialogPane dialogPane) {
         DropShadow dropShadow = new DropShadow();
         dropShadow.setRadius(10);
@@ -178,11 +122,7 @@ public class AlertUtils {
         dialogPane.setEffect(dropShadow);
     }
     
-    /**
-     * Sets a modern font style for alert dialogs.
-     * 
-     * @param dialogPane the DialogPane to style
-     */
+    // Sets a modern font style for alert dialogs.
     public static void applyModernFont(DialogPane dialogPane) {
         dialogPane.setStyle("-fx-font-family: 'Segoe UI', Arial, sans-serif;");
     }
