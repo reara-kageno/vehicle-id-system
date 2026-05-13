@@ -1,24 +1,17 @@
 package com.plateiq.utils;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
-/**
- * Utility class for managing scene transitions between FXML views.
- */
+// Utility class for managing scene transitions between FXML views.
 public class SceneNavigator {
 
-    /**
-     * Switches to a new scene based on the provided FXML path.
-     *
-     * @param event   The action event triggering the scene change
-     * @param fxmlPath The path to the FXML file to load
-     */
+    // Switches to a new scene based on the provided FXML path.
     public static void switchScene(ActionEvent event, String fxmlPath) {
         try {
             // Get the current stage from the event
